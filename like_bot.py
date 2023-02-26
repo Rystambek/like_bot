@@ -1,25 +1,33 @@
-import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,CallbackContext,CallbackQueryHandler
-from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,CallbackQueryHandler,Dispatcher
+from telegram import Update,Bot
 from handler import start, get_image, callback_like
-import logging
-
+from flask import Flask, request
 import os
 
 # get token from environment variable
 TOKEN = os.environ['TOKEN'] 
 
-# Updater 
-updater = Updater(token=TOKEN)
+bot = Bot(token=TOKEN)
 
-# Dispatcher
-dp = updater.dispatcher
+app = Flask(__name__)
+
+@app.route('/webhook', methods=["POST", "GET"])
+def hello():
+    if request.method == 'GET':
+        return 'hi from Python2022I'
+    elif request.method == "POST":
+        data = request.get_json(force = True)
+        
+        dispacher: Dispatcher = Dispatcher(bot, update_queue=None, workers=0)
+        update:Update = Update.de_json(data, bot)
+    
+        #update 
+                
+        dispacher.add_handler(CallbackQueryHandler(callback_like))
+        dispacher.add_handler(MessageHandler(Filters.photo,get_image))
+        dispacher.add_handler(CommandHandler('start',start))
 
 
-
-dp.add_handler(CommandHandler('start', start))
-dp.add_handler(MessageHandler(Filters.photo, get_image))
-dp.add_handler(CallbackQueryHandler(callback_like))
-updater.start_polling()
-updater.idle()
-
+        
+        dispacher.process_update(update)
+        return 'ok'
