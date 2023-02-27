@@ -63,6 +63,7 @@ def callback_like(update:Update, context:CallbackContext):
     user_id = query.from_user.id
     # Get message id
     message_id = query.message.message_id
+    user_id = str(user_id)
     if like == "like":
         url = 'https://rystambek.pythonanywhere.com/api/add-like/'
         payload = {
