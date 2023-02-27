@@ -5,8 +5,8 @@ import logging
 import requests
 # Handler for /start command
 def start(update:Update, context:CallbackContext):
-
-    update.message.reply_text('Botga rasm yuboring uni kanalga baholash uchun jo\'natadi.')
+    name = update.message.from_user.first_name
+    update.message.reply_text(f'Assalomu alaylum {name}\n Botimizga hush kelibsiz.\nBu bot rasm tashlasangiz kanalga tashlaydi')
 
 # Handler for get image
 def get_image(update:Update, context:CallbackContext):
